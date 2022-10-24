@@ -1,0 +1,21 @@
+version: '3.9'
+volumes:
+  pma-session-store:
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=blog
+  pma:
+      image: phpmyadmin/phpmyadmin
+      environment:
+        - PMA_HOST=db
+        - PMA_USER=root
+        - PMA_PASSWORD=password
+      ports:
+        - 8080:80
+      volumes:
+        - pma-session-store:/sessions
