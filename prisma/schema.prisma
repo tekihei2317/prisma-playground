@@ -8,31 +8,36 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique
-  email     String     @unique
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
   password  String
   image     String?
   bio       String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  articles  Article[]
-  comments  Comment[]
-  Favorite  Favorite[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles       Article[]
+  comments       Comment[]
+  favorites      Favorite[]
+  followers      Follow[]   @relation("Followers")
+  followingUsers Follow[]   @relation("FollowingUsers")
 }
 
 model Article {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   userId      Int
-  author      User       @relation(fields: [userId], references: [id])
+  author      User     @relation(fields: [userId], references: [id])
   title       String
   slug        String
   description String
   body        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  comments    Comment[]
-  Favorite    Favorite[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  comments  Comment[]
+  favorites Favorite[]
+  tags      Tag[]
 }
 
 model Comment {
@@ -42,8 +47,17 @@ model Comment {
   body      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  article   Article  @relation(fields: [articleId], references: [id])
+
+  user    User    @relation(fields: [userId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
 }
 
 model Favorite {
@@ -57,4 +71,17 @@ model Favorite {
   article Article @relation(fields: [articleId], references: [id])
 
   @@unique([userId, articleId])
+}
+
+model Follow {
+  id         Int      @id @default(autoincrement())
+  followerId Int
+  followeeId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  follower User @relation(name: "Followers", fields: [followerId], references: [id])
+  followee User @relation(name: "FollowingUsers", fields: [followeeId], references: [id])
+
+  @@unique([followerId, followeeId])
 }
