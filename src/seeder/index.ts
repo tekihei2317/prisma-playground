@@ -1,23 +1,35 @@
-import { databaseSeeder, Seeder } from "./database-seeder";
+import { databaseSeeder, SeederName, Seeder } from "./database-seeder";
 
 const seederName = process.argv[2];
+
+async function execSeeder(seeder: Seeder) {
+  try {
+    await seeder();
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message);
+      process.exit(1);
+    }
+  }
+}
 
 async function main() {
   // シーダー名を指定しなかった場合
   if (seederName === undefined) {
     for (const seeder of Object.values(databaseSeeder)) {
-      await seeder();
+      await execSeeder(seeder);
     }
     return;
   }
 
   if (seederName in databaseSeeder) {
-    // TODO: Seeder型に絞り込む
-    await databaseSeeder[seederName as Seeder]();
+    // TODO: SeederName型に絞り込む
+    await execSeeder(databaseSeeder[seederName as SeederName]);
     return;
   }
 
-  throw new Error("シーダー名が間違っています");
+  console.error("error: シーダー名が間違っています");
+  process.exit(1);
 }
 
 main();

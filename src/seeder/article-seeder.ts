@@ -10,9 +10,8 @@ export async function articleSeeder() {
   };
 
   const user = await prisma.user.create({ data: firstUser });
-  console.log({ user });
 
-  const article = await prisma.article.create({
+  await prisma.article.create({
     data: {
       title: "Prismaを使ってみた",
       description: "Prismaを使ってみた",
@@ -23,5 +22,4 @@ export async function articleSeeder() {
       },
     },
   });
-  console.log({ article });
 }

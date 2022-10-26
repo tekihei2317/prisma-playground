@@ -1,6 +1,7 @@
 import { prisma } from "../utils/prisma";
 
 export async function tagSeeder() {
+  await prisma.tag.deleteMany();
   const tags = await prisma.tag.createMany({
     data: [
       {
@@ -22,15 +23,13 @@ export async function tagSeeder() {
   ]);
 
   const article = await prisma.article.findFirstOrThrow();
-  const articleAndTags = await prisma.article.update({
-    where: {
-      id: article.id,
-    },
+  await prisma.article.update({
+    where: { id: article.id },
     data: {
       tags: {
-        connect: [tag1, tag2],
+        connect: [{ id: tag1.id }, { id: tag2.id }],
       },
     },
+    include: { tags: true },
   });
-  console.log({ articleAndTags }); //
 }

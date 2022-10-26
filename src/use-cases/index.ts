@@ -66,7 +66,14 @@ async function main() {
     },
   });
 
-  console.log({ followingUsers });
+  printObject(followingUsers);
+
+  // 記事とその記事のタグ一覧を取得する
+  const articleAndtag = await prisma.article.findUnique({
+    where: { id: 1 },
+    include: { tags: true },
+  });
+  printObject(articleAndtag);
 }
 
 main();

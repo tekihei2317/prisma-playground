@@ -5,9 +5,10 @@ import { followSeeder } from "./follow-seeder";
 
 export const databaseSeeder = {
   articleSeeder,
-  // tagSeeder,
+  tagSeeder,
   commentSeeder,
   followSeeder,
 };
 
-export type Seeder = keyof typeof databaseSeeder;
+export type SeederName = keyof typeof databaseSeeder;
+export type Seeder = () => Promise<void>;
