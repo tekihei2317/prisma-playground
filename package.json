@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "db:seed": "ts-node src/seeder/index.ts",
+    "migrate:fresh": "prisma migrate reset --force && npm run db:seed"
+  },
   "devDependencies": {
     "prisma": "^4.5.0",
     "ts-node": "^10.9.1",
